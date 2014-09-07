@@ -9,8 +9,7 @@ It defines the state of CloudFront using DSL, and updates CloudFront according t
 ### Notice
 
 - Frontwalker is identify distributions by special comments. So do not edit comment manual on AWS Management Console or AWS API.
-- Currently not supported `Restrictions` feature.
-
+- Currently not supported `Restrictions` and `active_trusted_signers` feature.
 
 ## Installation
 
@@ -67,7 +66,7 @@ require 'other/frontfile'
 
 distribution "www.example.com" do
   id "ABC123456789" # This ID is important to manage existing distibution. 
-  price_class "PriceClass_All"
+  price_class "PriceClass_All" # or PriceClass_200 or PriceClass_100
   enabled true
 
   aliases(

@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+$: << File.expand_path("#{File.dirname __FILE__}/../lib")
+require 'rubygems'
+require 'frontwalker'
+require 'optparse'
+require 'logger'
+
+mode = nil
+file = 'Frontfile'
+output_file = '-'
+split = false
+
+logger = Logger.new($stdout)
+logger.formatter = proc do |serverity, datetime, progname, msg|
+  "#{msg}\n"
+end
+
+options = {
+  logger:   logger,
+  dry_run:  false,
+  force:    false,
+  color:    false,
+  debug:    false
+}
+
+ARGV.options do |opt|
+end
+
+begin
+  logger = options[:logger]
+  logger.level = options[:debug] ? Logger::DEBUG : Logger::INFO
+
+  client = Frontwalker::Client.new(options)
+
+  mode = :export # FIXME
+
+  case mode
+  when :export
+    exported = client.export
+    logger.info('# Export CloudFront')
+    puts exported
+  else
+    raise 'must not happen'
+  end
+rescue => e
+  raise e if options[:debug]
+  $stderr.puts e
+  $stderr.puts "\n"
+  $stderr.puts e.backtrace.join("\n")
+  exit 1
+end
