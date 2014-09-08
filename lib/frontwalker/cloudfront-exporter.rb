@@ -9,6 +9,7 @@ module Frontwalker
 
     def initialize(options)
       @options = options
+      @client = @options.cloudfront.client
     end
 
     def export
@@ -21,9 +22,14 @@ module Frontwalker
     private
 
     def export_distributions(distibutions)
-      resp = @options.cloudfront.client.list_distributions
+      ids = []
+      resp = @client.list_distributions
       resp[:items].each do |distibution|
-        distibutions << distibution
+        ids << distibution[:id]
+      end
+
+      ids.each do |id|
+        distibutions << @client.get_distribution(id: id)
       end
     end
   end
